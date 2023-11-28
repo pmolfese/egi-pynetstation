@@ -179,8 +179,8 @@ class NetStation(object):
         self.ntpsync()
 
     @check_connected
-    def resync_do_not_use_not_recommended(self):
-        """Perform a re-synchronization: NOT RECOMMENDED; INCLUDED FOR COMPLETENESS"""
+    def resyncNTP(self):
+        """Perform a re-synchronization with NTP fix"""
         if not self._ntp_ip:
             raise NetStationNoNTPIP()
         if not self._ntpsynced:
@@ -190,11 +190,21 @@ class NetStation(object):
         t = time.time()
         ntp_t = system_to_ntp_time(t)
         response = self._command('NTPReturnClock', ntp_t + response.offset)
+        response_t = ntp_to_system_time(response)
+        
+        # need to calculate offset between what previous self._offset and current is
+        
+        # need to calculate if response_t is within some threshold of what time i have
+        
+        #adding updates to epoch
+        self._offset = response.offset
+        self._syncepoch = t
+        
         self.send_event(event_type="RESY")
         # TODO: Turn into a debug option
-        # print('Sent local time: ' + format_time(t))
-        # print(f'NTP offset is approx {self._offset}')
-        # print(f'Response is {response} (or {format_time(response)}')
+        print('Sent local time: ' + format_time(t))
+        print(f'NTP offset is approx {self._offset}')
+        print(f'Response is {response} (or {format_time(response_t)}')
 
     @check_connected
     def disconnect(self) -> None:
