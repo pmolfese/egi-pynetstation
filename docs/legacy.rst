@@ -29,7 +29,7 @@ The normal recording calls remain familiar:
 
 .. code-block:: python
 
-   ns.connect(ntp_ip=amp_ip, drift_warmup=True)
+   ns.connect(ntp_ip=amp_ip)
    ns.begin_rec()
    ns.send_event(event_type='stim')
    ns.end_rec()
